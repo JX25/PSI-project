@@ -1,9 +1,7 @@
 # Ignore the seaborn warnings.
 import warnings
 from pprint import pprint
-
 warnings.filterwarnings("ignore");
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
