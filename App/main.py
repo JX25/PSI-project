@@ -1,12 +1,15 @@
 import warnings
+from pprint import pprint
 import pandas as pd
 import math
-warnings.filterwarnings("ignore");
+warnings.filterwarnings("ignore")
 import numpy as np
+from App.NeuralNetwork import *
 
 # Candidate prediction
 # ------------------------
-candidate = "Ted Cruz"
+candidate = "Donald Trump"
+party = "Republican"
 # ------------------------
 # import from .csv files
 data = pd.read_csv('data/primary_results.csv')
@@ -36,6 +39,12 @@ for (i, st, edu1, edu2, hsg, inc, lnd, pop, pst, vet, sex, sbo1, sbo2, sbo3, sbo
 # prepare test set
 # county = []
 states = ["California", "Texas", "Florida", "Iowa", "New Jersey", "Virginia"]
+# get sum of votes from state
+sum_of_votes = []
+for state in states:
+    sum_state = 0
+    v = data[(data.state == state) & (data.party == party)].votes
+    sum_of_votes.append(pd.Series(v).sum())
 # get votes from state
 votes = []
 for state in states:
@@ -54,7 +63,13 @@ for state in states:
             facts.append(det)
 
 # to predict
-states_predict = ["Georgia", "Ohio", "New York"]
+states_predict = ["Georgia", "Ohio", "New York", "Alaska"]
+# get sum of votes from state to predict
+sum_of_votes_predict = []
+for state in states_predict:
+    sum_state = 0
+    v = data[(data.state == state) & (data.party == party)].votes
+    sum_of_votes_predict.append(pd.Series(v).sum())
 # get votes from state to predict
 votes_to_predict = []
 for state in states_predict:
@@ -62,7 +77,7 @@ for state in states_predict:
     for result in candidat_info:
         if result[0] == state:
             sum_state = sum_state + result[2]
-        votes_to_predict.append(sum_state)
+    votes_to_predict.append(sum_state)
 # get state facts to predict
 facts_vtp = []
 for state in states_predict:
@@ -71,17 +86,23 @@ for state in states_predict:
             det = stat[2:]
             facts_vtp.append(det)
 # convert to numpy array training set
-votes = np.asanyarray(votes)
-facts = np.asanyarray(facts)
+votes = np.asanyarray(votes, dtype=np.float32).reshape(1, 6)
+facts = np.asanyarray(facts, dtype=np.float32)
 # convert to numpy array to predict
-votes_to_predict = np.asarray(votes_to_predict)
-facts_vtp = np.asanyarray(facts_vtp)
+votes_to_predict = np.asarray(votes_to_predict, dtype=np.float32).reshape(1,4)
+facts_vtp = np.asanyarray(facts_vtp, dtype=np.float32)
 # normalize values 0..1
 # normalize votes
-max_vote = np.max(votes)
-if np.max(votes_to_predict) > max_vote:
-    max_vote = np.max(votes_to_predict)
-votes = votes / max_vote
-votes_to_predict = votes_to_predict / max_vote
+votes = votes / sum_of_votes
+votes_to_predict = votes_to_predict / sum_of_votes_predict
 # normalize facts
-print("XD")
+norm = facts.max(axis=0)
+norm_2 = facts_vtp.max(axis=0)
+for i in range(0, len(norm)):
+    if norm[i] < norm_2[i]:
+        norm[i] = norm_2[i]
+facts = facts / norm
+facts_vtp = facts_vtp / norm
+
+neural_network = ANN()
+neural_network.train_model(facts, votes, facts_vtp, votes_to_predict)
