@@ -43,6 +43,7 @@ states = [
     "Arizona",
     "Arkansas",
     "California",
+    "Colorado",
     "Connecticut",
     "Delaware",
     "Florida",
@@ -55,9 +56,11 @@ states = [
     "Kansas",
     "Kentucky",
     "Louisiana",
+    "Maine",
     "Maryland",
     "Massachusetts",
     "Michigan",
+    "Minnesota",
     "Mississippi",
     "Missouri",
     "Montana",
@@ -68,6 +71,7 @@ states = [
     "New Mexico",
     "New York",
     "North Carolina",
+    "North Dakota",
     "Ohio",
     "Oklahoma",
     "Oregon",
@@ -88,7 +92,6 @@ states = [
 # get sum of votes from state
 sum_of_votes = []
 for state in states:
-    sum_state = 0
     v = data[(data.state == state) & (data.party == party)].votes
     sum_of_votes.append(pd.Series(v).sum())
 # get votes from state
@@ -109,11 +112,10 @@ for state in states:
             facts.append(det)
 
 # to predict
-states_predict = ["Georgia", "Ohio", "New York", "Alaska"]
+states_predict = ["Georgia", "Ohio", "New York"]
 # get sum of votes from state to predict
 sum_of_votes_predict = []
 for state in states_predict:
-    sum_state = 0
     v = data[(data.state == state) & (data.party == party)].votes
     sum_of_votes_predict.append(pd.Series(v).sum())
 # get votes from state to predict
@@ -132,14 +134,15 @@ for state in states_predict:
             det = stat[2:]
             facts_vtp.append(det)
 # convert to numpy array training set
-votes = np.asanyarray(votes, dtype=np.float32).reshape(1, 46)
+votes = np.asanyarray(votes, dtype=np.float32).reshape(1, len(states))
 facts = np.asanyarray(facts, dtype=np.float32)
 # convert to numpy array to predict
-votes_to_predict = np.asarray(votes_to_predict, dtype=np.float32).reshape(1,4)
+votes_to_predict = np.asarray(votes_to_predict, dtype=np.float32).reshape(1, len(states_predict))
 facts_vtp = np.asanyarray(facts_vtp, dtype=np.float32)
 # normalize values 0..1
 # normalize votes
 votes = votes / sum_of_votes
+votes = np.nan_to_num(votes)
 votes_to_predict = votes_to_predict / sum_of_votes_predict
 # normalize facts
 norm = facts.max(axis=0)

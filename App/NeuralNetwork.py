@@ -12,7 +12,7 @@ y_predict = votes_to_predict
 yt_pr = np.transpose(y_predict).astype(np.float64).tolist()
 yt = np.transpose(y_train).astype(np.float64).tolist()
 
-nn = MLPRegressor(activation='relu', solver='adam', hidden_layer_sizes=(500, 550, 300, 500, 230, 360), random_state=1)
+nn = MLPRegressor(activation='relu', solver='adam', max_iter=5000, hidden_layer_sizes=(300, 50, 100, 50))
 nn.fit(x_train, yt)
 train_mse = nn.predict(x_train)
 test_mse = nn.predict(x_predict)
