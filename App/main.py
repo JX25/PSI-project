@@ -4,7 +4,6 @@ import pandas as pd
 import math
 warnings.filterwarnings("ignore")
 import numpy as np
-from App.NeuralNetwork import *
 
 # Candidate prediction
 # ------------------------
@@ -38,7 +37,54 @@ for (i, st, edu1, edu2, hsg, inc, lnd, pop, pst, vet, sex, sbo1, sbo2, sbo3, sbo
 
 # prepare test set
 # county = []
-states = ["California", "Texas", "Florida", "Iowa", "New Jersey", "Virginia"]
+states = [
+    "Alabama",
+    "Alaska",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Connecticut",
+    "Delaware",
+    "Florida",
+    "Georgia",
+    "Hawaii",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maryland",
+    "Massachusetts",
+    "Michigan",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Pennsylvania",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Vermont",
+    "Virginia",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming"
+]
 # get sum of votes from state
 sum_of_votes = []
 for state in states:
@@ -86,7 +132,7 @@ for state in states_predict:
             det = stat[2:]
             facts_vtp.append(det)
 # convert to numpy array training set
-votes = np.asanyarray(votes, dtype=np.float32).reshape(1, 6)
+votes = np.asanyarray(votes, dtype=np.float32).reshape(1, 46)
 facts = np.asanyarray(facts, dtype=np.float32)
 # convert to numpy array to predict
 votes_to_predict = np.asarray(votes_to_predict, dtype=np.float32).reshape(1,4)
@@ -104,5 +150,5 @@ for i in range(0, len(norm)):
 facts = facts / norm
 facts_vtp = facts_vtp / norm
 
-neural_network = ANN()
-neural_network.train_model(facts, votes, facts_vtp, votes_to_predict)
+#neural_network = ANN()
+#neural_network.train_model(facts, votes, facts_vtp, votes_to_predict)
